@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1BRC Leaderboard Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+          rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            scroll-behavior: smooth;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #60a5fa, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Animação de entrada das linhas */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .row-animate {
+            animation: fadeInUp 0.4s ease forwards;
+            opacity: 0;
+        }
+
+        select option {
+            background-color: #1e293b;
+        }
+    </style>
+</head>
+<body class="text-slate-200 antialiased min-h-screen flex flex-col">
+
+<div class="max-w-6xl mx-auto px-4 py-10 flex-grow w-full">
+    <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-800 pb-8 text-center md:text-left">
+        <div>
+            <h1 class="text-4xl font-extrabold tracking-tight text-white mb-2">
+                <span class="gradient-text">1BRC</span> Leaderboard
+            </h1>
+            <p class="text-slate-400 italic">The 100 Million Row Challenge in PHP</p>
+            <a href="https://github.com/tempestphp/100-million-row-challenge" target="_blank"
+               class="inline-flex text-xs text-blue-400 hover:text-blue-300 transition-colors items-center mt-2 group">
+                <svg class="w-4 h-4 mr-1 group-hover:scale-110 transition-transform" fill="currentColor"
+                     viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                Official Repository
+            </a>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Ranking Type</label>
+            <select id="repoSelector"
+                    class="bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer">
+                <option value="main">Multi-thread (Default)</option>
+                <option value="single-thread">Single-thread</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8">
+        <div class="md:col-span-5">
+            <input type="text" id="searchInput" placeholder="Search by user or branch name..."
+                   class="w-full bg-slate-800/50 border border-slate-700 px-5 py-4 rounded-2xl text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 outline-none transition-all glass">
+        </div>
+
+        <div class="md:col-span-3">
+            <select id="timeFilter"
+                    class="w-full h-full bg-slate-800/50 border border-slate-700 px-4 py-4 rounded-2xl text-white outline-none glass cursor-pointer">
+                <option value="all">All Execution Times</option>
+                <option value="5">Under 5 seconds</option>
+                <option value="10">Under 10 seconds</option>
+                <option value="30">Under 30 seconds</option>
+            </select>
+        </div>
+
+        <div class="md:col-span-2">
+            <select id="sortFilter"
+                    class="w-full h-full bg-slate-800/50 border border-slate-700 px-4 py-4 rounded-2xl text-white outline-none glass cursor-pointer">
+                <option value="fastest">Fastest First</option>
+                <option value="recent">Most Recent</option>
+            </select>
+        </div>
+
+        <div id="stats"
+             class="md:col-span-2 flex items-center justify-center px-4 py-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 font-bold glass">
+            ...
+        </div>
+    </div>
+
+    <div class="glass rounded-3xl overflow-hidden shadow-2xl border border-slate-800">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                <tr class="bg-slate-800/80 text-slate-400 text-xs uppercase tracking-widest border-b border-slate-700">
+                    <th class="px-8 py-5">Rank</th>
+                    <th class="px-8 py-5">User / Branch</th>
+                    <th class="px-8 py-5 text-right">Execution Time</th>
+                    <th class="px-8 py-5 text-center">Date</th>
+                </tr>
+                </thead>
+                <tbody id="tableBody" class="divide-y divide-slate-800/50">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<footer class="mt-auto py-8 text-center border-t border-slate-800 bg-slate-900/50">
+    <p class="text-slate-500 text-sm">
+        Maintained by <a href="https://github.com/marcosmarcolin"
+                         class="text-blue-400 hover:underline transition-colors">marcosmarcolin</a>
+    </p>
+    <p class="mt-2 text-[10px] text-slate-600 uppercase tracking-[0.2em]">
+        <a href="https://github.com/marcosmarcolin/leaderboard-100-million-row-challenge"
+           class="hover:text-blue-500 transition-colors">
+            View Source Code
+        </a>
+    </p>
+</footer>
+
+<script>
+    const URLS = {
+        'main': 'https://raw.githubusercontent.com/tempestphp/100-million-row-challenge/refs/heads/main/leaderboard.csv',
+        'single-thread': 'https://raw.githubusercontent.com/tempestphp/100-million-row-challenge/refs/heads/main/leaderboard-single-thread.csv'
+    };
+
+    let rawData = [];
+
+    const searchInput = document.getElementById('searchInput');
+    const repoSelector = document.getElementById('repoSelector');
+    const timeFilter = document.getElementById('timeFilter');
+    const sortFilter = document.getElementById('sortFilter');
+    const tableBody = document.getElementById('tableBody');
+    const stats = document.getElementById('stats');
+
+    // QUERY STRINGS LOGIC
+    function updateQueryParams() {
+        const params = new URLSearchParams();
+        if (searchInput.value) params.set('search', searchInput.value);
+        if (timeFilter.value !== 'all') params.set('time', timeFilter.value);
+        if (sortFilter.value !== 'fastest') params.set('sort', sortFilter.value);
+        if (repoSelector.value !== 'main') params.set('type', repoSelector.value);
+
+        const newRelativePathQuery = window.location.pathname + '?' + params.toString();
+        window.history.pushState(null, '', newRelativePathQuery);
+    }
+
+    function loadParamsFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('search')) searchInput.value = params.get('search');
+        if (params.has('time')) timeFilter.value = params.get('time');
+        if (params.has('sort')) sortFilter.value = params.get('sort');
+        if (params.has('type')) repoSelector.value = params.get('type');
+    }
+
+    function loadData(type) {
+        stats.innerText = "Syncing...";
+        Papa.parse(URLS[type], {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            complete: function (results) {
+                rawData = results.data.filter(row => row.branch_name && row.time);
+                applyFilters();
+            }
+        });
+    }
+
+    function applyFilters() {
+        let filtered = [...rawData];
+        const term = searchInput.value.toLowerCase();
+
+        if (term) filtered = filtered.filter(row => row.branch_name.toLowerCase().includes(term));
+
+        const maxTime = timeFilter.value;
+        if (maxTime !== 'all') filtered = filtered.filter(row => parseFloat(row.time) <= parseFloat(maxTime));
+
+        const sortBy = sortFilter.value;
+        if (sortBy === 'fastest') filtered.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
+        else if (sortBy === 'recent') filtered.sort((a, b) => parseInt(b.entry_date) - parseInt(a.entry_date));
+
+        updateQueryParams();
+        renderTable(filtered);
+    }
+
+    function formatDate(unix) {
+        if (!unix || isNaN(unix)) return '---';
+        const date = new Date(unix * 1000);
+        return date.toLocaleDateString('en-US', {month: 'short', day: '2-digit'});
+    }
+
+    function renderTable(data) {
+        stats.innerText = `${data.length} ENTRIES`;
+        tableBody.innerHTML = '';
+
+        if (data.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="4" class="px-8 py-20 text-center text-slate-500 italic font-mono text-sm uppercase tracking-widest">No matching results</td></tr>`;
+            return;
+        }
+
+        data.forEach((row, index) => {
+            // Find global rank (always based on fastest time)
+            const globalIndex = rawData
+                .sort((a, b) => parseFloat(a.time) - parseFloat(b.time))
+                .findIndex(item => item.branch_name === row.branch_name);
+
+            const displayRank = globalIndex + 1;
+            const isTop3 = displayRank <= 3 && sortFilter.value === 'fastest';
+            const colors = ['text-yellow-400', 'text-slate-300', 'text-orange-400'];
+
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-white/5 transition-all group row-animate';
+            tr.style.animationDelay = `${Math.min(index * 0.03, 1.5)}s`; // Staggered animation
+
+            tr.innerHTML = `
+                <td class="px-8 py-5">
+                    <span class="mono ${isTop3 ? colors[displayRank - 1] + ' font-bold text-lg' : 'text-slate-600'}">
+                        ${isTop3 ? '★' : ''} #${displayRank.toString().padStart(2, '0')}
+                    </span>
+                </td>
+                <td class="px-8 py-5 font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight">
+                    ${row.branch_name.trim()}
+                </td>
+                <td class="px-8 py-5 text-right">
+                    <span class="mono font-bold ${parseFloat(row.time) < 10 ? 'text-green-400' : 'text-blue-400'}">
+                        ${parseFloat(row.time).toFixed(4)}<span class="text-[10px] ml-1 opacity-50 uppercase text-white">sec</span>
+                    </span>
+                </td>
+                <td class="px-8 py-5 text-sm text-slate-500 mono text-center">
+                    ${formatDate(row.entry_date)}
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+
+    // Event Listeners
+    [searchInput, timeFilter, sortFilter].forEach(el => {
+        el.addEventListener('input', applyFilters);
+    });
+
+    repoSelector.addEventListener('change', (e) => {
+        loadData(e.target.value);
+    });
+
+    // On startup: Load URL params THEN load data
+    window.addEventListener('popstate', () => {
+        loadParamsFromURL();
+        applyFilters();
+    });
+
+    loadParamsFromURL();
+    loadData(repoSelector.value);
+</script>
+</body>
+</html>
