@@ -175,7 +175,9 @@
         if (timeFilter.value !== 'all') params.set('time', timeFilter.value);
         if (sortFilter.value !== 'fastest') params.set('sort', sortFilter.value);
         if (repoSelector.value !== 'main') params.set('type', repoSelector.value);
-        window.history.pushState(null, '', window.location.pathname + '?' + params.toString());
+        const queryString = params.toString();
+        const newRelativePathQuery = window.location.pathname + (queryString ? '?' + queryString : '');
+        window.history.replaceState(null, '', newRelativePathQuery);
     }
 
     function loadParamsFromURL() {
