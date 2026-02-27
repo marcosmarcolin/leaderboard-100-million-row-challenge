@@ -3,7 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1BRC Leaderboard Explorer</title>
+    <title>PHP 1BRC Leaderboard Explorer</title>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JCT8KFTVZ5"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'G-JCT8KFTVZ5');
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap"
@@ -31,7 +44,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Animação de entrada das linhas */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -59,9 +71,9 @@
     <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-800 pb-8 text-center md:text-left">
         <div>
             <h1 class="text-4xl font-extrabold tracking-tight text-white mb-2">
-                <span class="gradient-text">1BRC</span> Leaderboard
+                <span class="gradient-text">PHP</span> High Performance <span class="text-slate-500">1BRC</span>
             </h1>
-            <p class="text-slate-400 italic">The 100 Million Row Challenge in PHP</p>
+            <p class="text-slate-400 italic font-medium">Crunching 100 Million Rows with Modern PHP</p>
             <a href="https://github.com/tempestphp/100-million-row-challenge" target="_blank"
                class="inline-flex text-xs text-blue-400 hover:text-blue-300 transition-colors items-center mt-2 group">
                 <svg class="w-4 h-4 mr-1 group-hover:scale-110 transition-transform" fill="currentColor"
@@ -73,11 +85,11 @@
         </div>
 
         <div class="flex flex-col gap-2">
-            <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Ranking Type</label>
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Execution Strategy</label>
             <select id="repoSelector"
                     class="bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer">
-                <option value="main">Multi-thread (Default)</option>
-                <option value="single-thread">Single-thread</option>
+                <option value="main">Parallel / Multi-process</option>
+                <option value="single-thread">Single-process (Core)</option>
             </select>
         </div>
     </header>
@@ -101,8 +113,8 @@
         <div class="md:col-span-2">
             <select id="sortFilter"
                     class="w-full h-full bg-slate-800/50 border border-slate-700 px-4 py-4 rounded-2xl text-white outline-none glass cursor-pointer">
-                <option value="fastest">Fastest First</option>
-                <option value="recent">Most Recent</option>
+                <option value="fastest">Fastest Performance</option>
+                <option value="recent">Recent Submissions</option>
             </select>
         </div>
 
@@ -137,25 +149,12 @@
     </p>
     <p class="mt-2 text-[10px] text-slate-600 uppercase tracking-[0.2em]">
         <a href="https://github.com/marcosmarcolin/leaderboard-100-million-row-challenge"
+           target="_blank"
            class="hover:text-blue-500 transition-colors">
             View Source Code
         </a>
     </p>
 </footer>
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-JCT8KFTVZ5"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-
-    function gtag() {
-        dataLayer.push(arguments);
-    }
-
-    gtag('js', new Date());
-
-    gtag('config', 'G-JCT8KFTVZ5');
-</script>
 
 <script>
     const URLS = {
@@ -172,7 +171,6 @@
     const tableBody = document.getElementById('tableBody');
     const stats = document.getElementById('stats');
 
-    // QUERY STRINGS LOGIC
     function updateQueryParams() {
         const params = new URLSearchParams();
         if (searchInput.value) params.set('search', searchInput.value);
@@ -238,7 +236,6 @@
         }
 
         data.forEach((row, index) => {
-            // Find global rank (always based on fastest time)
             const globalIndex = rawData
                 .sort((a, b) => parseFloat(a.time) - parseFloat(b.time))
                 .findIndex(item => item.branch_name === row.branch_name);
@@ -249,7 +246,7 @@
 
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-white/5 transition-all group row-animate';
-            tr.style.animationDelay = `${Math.min(index * 0.03, 1.5)}s`; // Staggered animation
+            tr.style.animationDelay = `${Math.min(index * 0.03, 1.5)}s`;
 
             tr.innerHTML = `
                 <td class="px-8 py-5">
@@ -273,7 +270,6 @@
         });
     }
 
-    // Event Listeners
     [searchInput, timeFilter, sortFilter].forEach(el => {
         el.addEventListener('input', applyFilters);
     });
@@ -282,7 +278,6 @@
         loadData(e.target.value);
     });
 
-    // On startup: Load URL params THEN load data
     window.addEventListener('popstate', () => {
         loadParamsFromURL();
         applyFilters();
