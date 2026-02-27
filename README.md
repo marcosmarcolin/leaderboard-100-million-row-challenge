@@ -9,9 +9,9 @@ Check out the leaderboard here:
 ---
 
 ## 🚀 About the Challenge
-The 100 Million Row Challenge (1BRC) is a performance contest where developers must process a massive dataset of 100 million temperature measurements as fast as possible using PHP.
+The 100 Million Row Challenge (1BRC) by Tempest is a performance contest where developers must process a massive dataset of 100 million page visits as fast as possible using PHP.
 
-* **Objective:** Read a file with 100M lines and calculate Min, Max, and Mean temperatures per city.
+* **Objective:** Parse a dataset of 100M page visits and output the results into a formatted JSON file.
 * **Constraints:** No external extensions (unless specified), just pure PHP performance.
 * **Official Repository:** [tempestphp/100-million-row-challenge](https://github.com/tempestphp/100-million-row-challenge)
 
