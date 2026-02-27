@@ -2,6 +2,8 @@
 
 A clean, dark-themed dashboard to track the progress of the 100 Million Row Challenge in PHP. This project consumes real-time data from the official challenge repository and provides a searchable interface.
 
+![Leaderboard Web Preview](./preview.png)
+
 ## 🔗 Live Demo
 Check out the leaderboard here:
 [https://marcosmarcolin.github.io/leaderboard-100-million-row-challenge/](https://marcosmarcolin.github.io/leaderboard-100-million-row-challenge/)
@@ -19,7 +21,7 @@ The 100 Million Row Challenge (1BRC) by Tempest is a performance contest where d
 * **Live Data:** Consumes the official CSV directly from the source via GitHub's raw content.
 * **Switchable Rankings:** Easily toggle between Parallel (Multi-process) and Single-process results.
 * **Searchable:** Filter results by branch or username in real-time with URL persistence.
-* **Responsive Design:** Optimized for both Desktop and Mobile with a modern Dark Mode UI.
+* **Responsive Design:** Optimized for Desktop and Mobile with a modern Dark Mode UI.
 * **Animated UI:** Smooth staggered entry animations for a premium feel.
 
 ## 💻 Tech Stack
