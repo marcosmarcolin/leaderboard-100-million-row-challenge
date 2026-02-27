@@ -1,4 +1,4 @@
-# 🏆 PHP 1BRC Leaderboard Explorer
+# 🏆 PHP 100M Row Challenge Explorer
 
 A clean, dark-themed dashboard to track the progress of the 100 Million Row Challenge in PHP. This project consumes real-time data from the official challenge repository and provides a searchable interface.
 
@@ -11,7 +11,7 @@ Check out the leaderboard here:
 ---
 
 ## 🚀 About the Challenge
-The 100 Million Row Challenge (1BRC) by Tempest is a performance contest where developers must process a massive dataset of 100 million page visits as fast as possible using PHP.
+The **100 Million Row Challenge** by Tempest is a performance contest where developers must process a massive dataset of 100 million page visits as fast as possible using PHP.
 
 * **Objective:** Parse a dataset of 100M page visits and output the results into a formatted JSON file.
 * **Constraints:** No external extensions (unless specified), just pure PHP performance.
