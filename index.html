@@ -188,6 +188,8 @@
         'single-thread': 'https://raw.githubusercontent.com/tempestphp/100-million-row-challenge/refs/heads/main/leaderboard-single-thread.csv'
     };
 
+    const MEDALS = {1: '🥇', 2: '🥈', 3: '🥉'};
+
     let rawData = [];
     const searchInput = document.getElementById('searchInput');
     const repoSelector = document.getElementById('repoSelector');
@@ -252,11 +254,12 @@
             tr.className = `hover:bg-white/5 transition-all group row-animate ${isTop3 ? 'bg-blue-500/5 border-l-4 border-blue-500' : ''}`;
             tr.style.animationDelay = `${index * 0.02}s`;
 
+            const rankDisplay = MEDALS[rank] ? `<span class="text-xl">${MEDALS[rank]}</span>` : `#${rank.toString().padStart(2, '0')}`;
             const strategyBadge = isAllMode ? `<span class="text-[9px] ${row.strategy === 'Multi' ? 'bg-purple-500/20 text-purple-400 border-purple-500/30' : 'bg-blue-500/20 text-blue-400 border-blue-500/30'} px-2 py-0.5 rounded border ml-2">${row.strategy.toUpperCase()}</span>` : '';
             const eliteBadge = isTop3 ? `<span class="hidden md:inline text-[9px] bg-white/10 px-2 py-0.5 rounded-full text-slate-400 ml-2 font-bold border border-white/5 uppercase">Top Performance</span>` : '';
 
             tr.innerHTML = `
-                <td class="px-8 py-5 mono font-bold ${isTop3 ? 'text-blue-400' : 'text-slate-600'}">#${rank.toString().padStart(2, '0')}</td>
+                <td class="px-8 py-5 mono font-bold ${isTop3 ? 'text-blue-400' : 'text-slate-600'}">${rankDisplay}</td>
                 <td class="px-8 py-5">
                     <div class="flex items-center">
                         <a href="https://github.com/${username}" target="_blank" class="text-white font-bold hover:text-blue-400 transition-all uppercase tracking-tight flex items-center gap-2">
