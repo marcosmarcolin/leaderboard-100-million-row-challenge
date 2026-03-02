@@ -320,8 +320,13 @@
                 <td class="px-8 py-5 mono font-bold ${isTop3 ? 'text-blue-400' : 'text-slate-600'}">${rankDisplay}</td>
                 <td class="px-8 py-5">
                     <div class="flex items-center">
-                        <a href="https://github.com/${username}" target="_blank" class="text-white font-bold hover:text-blue-400 transition-all uppercase tracking-tight flex items-center gap-2">
-                            ${username} <svg class="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                        <a href="https://github.com/tempestphp/100-million-row-challenge/pulls?q=is%3Apr+is%3Aopen+author%3A${username}"
+                           target="_blank"
+                           class="text-white font-bold hover:text-blue-400 transition-all uppercase tracking-tight flex items-center gap-2 group">
+                            ${username}
+                            <svg class="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
                         </a>
                         ${strategyBadge} ${eliteBadge}
                     </div>
